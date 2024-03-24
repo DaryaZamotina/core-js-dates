@@ -126,8 +126,22 @@ function getCountDaysInMonth(month, year) {
  * '2024-02-01T00:00:00.000Z', '2024-02-02T00:00:00.000Z'  => 2
  * '2024-02-01T00:00:00.000Z', '2024-02-12T00:00:00.000Z'  => 12
  */
-function getCountDaysOnPeriod(/* dateStart, dateEnd */) {
-  throw new Error('Not implemented');
+function getCountDaysOnPeriod(dateStart, dateEnd) {
+  const start = new Date(dateStart);
+  const end = new Date(dateEnd);
+
+  const startDay = start.getDate();
+  const endDay = end.getDate();
+  let result;
+
+  if (start.getMonth() === end.getMonth()) {
+    result = endDay - startDay + 1;
+  } else {
+    const endOfMonth = new Date(start.getFullYear, start.getMonth() + 1, 0);
+    const delta = endOfMonth - startDay;
+    result = delta + end + 1;
+  }
+  return result;
 }
 
 /**
@@ -162,8 +176,40 @@ function isDateInPeriod(/* date, period */) {
  * '1999-01-05T02:20:00.000Z' => '1/5/1999, 2:20:00 AM'
  * '2010-12-15T22:59:00.000Z' => '12/15/2010, 10:59:00 PM'
  */
-function formatDate(/* date */) {
-  throw new Error('Not implemented');
+function formatDate(date) {
+  const dataCurr = new Date(date);
+  const data = dataCurr.toUTCString();
+  const min = data.getMinutes();
+  const sec = data.getSeconds();
+  const hr = data.getHours();
+  const day = data.getDate();
+  const month = data.getMonth();
+  const year = data.getFullYear();
+
+  let AmPm;
+
+  function addAmPm(num) {
+    if (num > 12 && num <= 24) {
+      AmPm = 'PM';
+      return num - 12;
+    }
+    AmPm = 'AM';
+    return num;
+  }
+
+  function addZero(num) {
+    if (num >= 0 && num < 10) {
+      return '0'.concat(String(num));
+    }
+    return num;
+  }
+
+  const fullres1 = `${month + 1}/${day}/${year}, `;
+
+  const fullres2 = `${addAmPm(hr)}:${addZero(min)}:${addZero(sec)}`;
+  const res = fullres1.concat(fullres2);
+  const fullres = `${res} ${AmPm}`;
+  return fullres;
 }
 
 /**
@@ -225,8 +271,23 @@ function getNextFridayThe13th(/* date */) {
  * Date(2024, 5, 1) => 2
  * Date(2024, 10, 10) => 4
  */
-function getQuarter(/* date */) {
-  throw new Error('Not implemented');
+function getQuarter(date) {
+  const data = new Date(date);
+  const month = data.getMonth();
+  let res;
+  if (month >= 0 && month < 3) {
+    res = 1;
+  }
+  if (month >= 3 && month < 6) {
+    res = 2;
+  }
+  if (month >= 6 && month < 9) {
+    res = 3;
+  }
+  if (month >= 9 && month < 12) {
+    res = 4;
+  }
+  return res;
 }
 
 /**
