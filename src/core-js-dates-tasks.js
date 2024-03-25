@@ -177,39 +177,11 @@ function isDateInPeriod(/* date, period */) {
  * '2010-12-15T22:59:00.000Z' => '12/15/2010, 10:59:00 PM'
  */
 function formatDate(date) {
-  const dataCurr = new Date(date);
-  const data = dataCurr.toUTCString();
-  const min = data.getMinutes();
-  const sec = data.getSeconds();
-  const hr = data.getHours();
-  const day = data.getDate();
-  const month = data.getMonth();
-  const year = data.getFullYear();
-
-  let AmPm;
-
-  function addAmPm(num) {
-    if (num > 12 && num <= 24) {
-      AmPm = 'PM';
-      return num - 12;
-    }
-    AmPm = 'AM';
-    return num;
-  }
-
-  function addZero(num) {
-    if (num >= 0 && num < 10) {
-      return '0'.concat(String(num));
-    }
-    return num;
-  }
-
-  const fullres1 = `${month + 1}/${day}/${year}, `;
-
-  const fullres2 = `${addAmPm(hr)}:${addZero(min)}:${addZero(sec)}`;
-  const res = fullres1.concat(fullres2);
-  const fullres = `${res} ${AmPm}`;
-  return fullres;
+  const now = new Date(date);
+  const res = now.toLocaleString('en-US', {
+    timeZone: 'UTC',
+  });
+  return res;
 }
 
 /**
@@ -256,8 +228,15 @@ function getWeekNumberByDate(/* date */) {
  * Date(2024, 0, 13) => Date(2024, 8, 13)
  * Date(2023, 1, 1) => Date(2023, 9, 13)
  */
-function getNextFridayThe13th(/* date */) {
-  throw new Error('Not implemented');
+function getNextFridayThe13th(date) {
+  const now = new Date(date);
+  const month = now.getMonth();
+  let fridayFin;
+  for (let mon = month; mon < 12; mon += 1) {
+    const friday = new Date(now.getFullYear(), mon, 13);
+    if (friday.getDay() === 5) fridayFin = friday;
+  }
+  return fridayFin;
 }
 
 /**
